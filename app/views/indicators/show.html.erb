@@ -1,0 +1,821 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <%= render 'layouts/tracking_scripts_preconnect' %>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://d3js.org" crossorigin>
+    <link rel="preconnect" href="https://pro.fontawesome.com" crossorigin>
+    <link rel="preconnect" href="https://etoro-cdn.etorostatic.com" crossorigin>
+    <link rel="preload" href="https://etoro-cdn.etorostatic.com/web-client/fonts/opensans/open-sans-v15-cyrillic-ext_cyrillic_greek_greek-ext_latin_latin-ext_vietnamese-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://etoro-cdn.etorostatic.com/web-client/fonts/opensans/open-sans-v15-cyrillic-ext_cyrillic_greek_greek-ext_latin_latin-ext_vietnamese-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://etoro-cdn.etorostatic.com/web-client/fonts/opensans/open-sans-v15-cyrillic-ext_cyrillic_greek_greek-ext_latin_latin-ext_vietnamese-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://pro.fontawesome.com/releases/v5.7.2/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://pro.fontawesome.com/releases/v5.7.2/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://pro.fontawesome.com/releases/v5.7.2/css/all.css" as="style" type="text/css" crossorigin>
+    <link rel="preload" href="<%= stylesheet_path 'indicators' %>" as="style" type="text/css">
+    <noscript>
+      <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.7.2/css/all.css" crossorigin="anonymous">
+      <%= stylesheet_link_tag 'indicators' %>
+    </noscript>
+    <style type="text/css">
+      html {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      html * {
+        max-width: 100vw;
+        box-sizing: border-box;
+      }
+      html, body {
+        background-color: #f0f0f0;
+      }
+      .loader {
+        position: relative;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 1px 1px 1px rgba(0,0,0,.1);
+        height: 65px;
+        width: 65px;
+        margin: 10px auto;
+        margin-bottom: -75px;
+        z-index: 999;
+      }
+      .loader:before {
+        background-image: url(https://etoro-cdn.etorostatic.com/web-client/img/eToro.png);
+      }
+      .loader:after, .loader:before {
+        height: 50px;
+        left: 50%;
+        content: "";
+        display: block;
+        margin-left: -25px;
+        margin-top: -25px;
+        position: absolute;
+        top: 50%;
+        width: 50px;
+        background-size: 50px 50px;
+        background-position: 50%;
+      }
+      @keyframes rotation {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .loader:after {
+        animation: rotation .5s infinite linear;
+        background-image: url(https://etoro-cdn.etorostatic.com/web-client/img/preloader.png);
+      }
+      .loader:after, .loader:before {
+        height: 50px;
+        left: 50%;
+        content: "";
+        display: block;
+        margin-left: -25px;
+        margin-top: -25px;
+        position: absolute;
+        top: 50%;
+        width: 50px;
+        background-size: 50px 50px;
+        background-position: 50%;
+      }
+    </style>
+  </head>
+  <body onload="handleOnload();">
+    <div class="loader" id="loader"></div>
+    <div class="main-container" id="main" style="visibility: hidden;">
+
+      <h2 class="main-title">
+        <%= t(:technical_analysis) %>
+        <a class="coinfi-link" href="<%= root_url %>?utm_source=etoro_research" onclick="return debouncedSendLink(this.href);">
+          Powered by <img src="<%= image_path('logo.svg') %>" class="coinfi-link__img" />
+        </a>
+      </h2>
+
+      <div class="flex-container">
+        <div class="one-third third-width-container">
+          <div class="paper gauge-container">
+            <h3>
+              <%= t(:technical_analysis_summary) %>
+              <a class="header-info-icon" data-tippy="<%= t :indicator_summary_copy %>"
+                data-tippy-size="small" data-tippy-arrow="true"
+              >
+                <i class="icon-info-circle"></i>
+              </a>
+            </h3>
+            <div class="indicators-summary-wrapper">
+              <svg id="indicator-summary"></svg>
+              <div class="indicators-spacer"></div>
+              <div class="indicators-summary">
+                <div class="buy">
+                  <div class="indicators-summary__label"><%= t(:buy).upcase %></div>
+                  <div class="indicators-summary__value"><%= @summary_buy %>%</div>
+                </div>
+                <div class="neutral">
+                  <div class="indicators-summary__label"><%= t(:neutral).upcase %></div>
+                  <div class="indicators-summary__value"><%= @summary_neutral %>%</div>
+                </div>
+                <div class="sell">
+                  <div class="indicators-summary__label"><%= t(:sell).upcase %></div>
+                  <div class="indicators-summary__value"><%= @summary_sell %>%</div>
+                </div>
+              </div>
+            </div>
+            <div class="indicators-consensus <%= @summary_consensus.downcase %>">
+              <span><%= t(@summary_consensus).capitalize %></span>
+            </div>
+            <div class="indicators-updated"><%= t(:updated_on_date, date: l(@last_updated, format: :readable_date, default: l(@last_updated))) %></div>
+          </div>
+        </div>
+        <div class="two-thirds third-width-container">
+          <div class="paper">
+            <h3>
+              <%= t(:technical_indicators) %>
+              <a data-tippy="<% @indicator_rows.each do |indicator| %>
+                  <p><b><%= t(indicator[:symbol], scope: 'indicators.title') %>:</b> <%= t(indicator[:symbol], scope: 'indicators.rule') %></p>
+                <% end %>" data-tippy-maxWidth="700" data-tippy-size="small" data-tippy-theme="indicators"
+                data-tippy-arrow="true"
+              >
+                <i class="icon-info-circle"></i>
+              </a>
+            </h3>
+            <table class="indicators-table">
+              <thead>
+                <tr>
+                  <th class="indicators__title"></th>
+                  <th class="indicators__value"><%= t :sample_value_label %></th>
+                  <th class="indicators__min"><%= t :min_label %></th>
+                  <th class="indicators__max"><%= t :max_label %></th>
+                  <th class="indicators__signal"><%= t :signal_label %></th>
+                </tr>
+              </thead>
+              <tbody>
+              <% @indicator_rows.each do |indicator| %>
+                <tr>
+                  <td class="indicators__title"><%= t(indicator[:symbol], scope: 'indicators.title') %></td>
+                  <td class="indicators__value number"><%= indicator[:value] %></td>
+                  <td class="indicators__min number"><%= indicator[:min].presence || t(:na) %></td>
+                  <td class="indicators__max number"><%= indicator[:max].presence || t(:na) %></td>
+                  <td class="indicators__signal <%= indicator[:signal].downcase %>">
+                    <span><%= indicator[:signal].present? ? t(indicator[:signal].downcase).upcase : "" %></span>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+            <div class="copy-container">
+              <span class="desktop-copy"><%= t :technical_indicator_copy %></span>
+              <span class="mobile-copy">
+                <%= t(:technical_indicator_copy).truncate(120, separator: /[\p{S}\s]/u, omission: "") %>
+                <a href="#" onclick="showReadMore(this); return false;"><%= t(:read_more) %></a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <% unless @news_items.blank? %>
+      <h2><%= t(:latest_research) %></h2>
+      <div class="flex-container">
+        <div class="paper">
+          <h3><%= t(:market_news_research) %></h3>
+          <div class="news">
+            <%= render partial: 'news', collection: @news_items, as: :news_item %>
+          </div>
+        </div>
+      </div>
+      <% end %>
+
+      <% if @has_git_stats %>
+        <h2><%= t(:fundamentals) %></h2>
+        <div class="flex-container flex-wrap">
+          <div class="paper with-sidebar">
+            <h3>
+              <%= t :development_activity %>
+            </h3>
+            <% if @commit_activity.present? %>
+            <svg id="commit-activity" class="graph-container tab-container" preserveAspectRatio="xMidYMid meet"></svg>
+            <% end %>
+          </div>
+          <div class="sidebar sidebar-right">
+            <h3>
+              <%= t :developer_community %>
+              <a class="header-info-icon" data-tippy-maxWidth="500" data-tippy-size="small" data-tippy-arrow="true"
+                data-tippy-theme="indicators" data-tippy="<%= t(:developer_community_copy) %>"
+              >
+                <i class="icon-info-circle"></i>
+              </a>
+            </h3>
+            <% if @git_snapshot.present? %>
+            <div class="git-stats">
+              <div class="git-stats__row">
+                <div class="git-stats__label">
+                  <i class="far fa-users"></i>
+                  <%= t(:contributors).capitalize %>
+                </div>
+                <div class="git-stats__right">
+                  <div class="git-stats__value"><%= @git_snapshot[:contributors] %></div>
+                  <% if @git_snapshot[:contributors_rank].present? and @git_snapshot[:contributors_total].present? %>
+                  <div class="git-stats__rank">
+                    <%= t(:ranked_out_of, rank: @git_snapshot[:contributors_rank], total: @git_snapshot[:contributors_total])%>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+              <div class="git-stats__row">
+                <div class="git-stats__label">
+                  <i class="far fa-code-branch"></i>
+                  <%= t(:forks).capitalize %>
+                </div>
+                <div class="git-stats__right">
+                  <div class="git-stats__value"><%= @git_snapshot[:forks] %></div>
+                  <% if @git_snapshot[:forks_rank].present? and @git_snapshot[:forks_total].present? %>
+                  <div class="git-stats__rank">
+                    <%= t(:ranked_out_of, rank: @git_snapshot[:forks_rank], total: @git_snapshot[:forks_total])%>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+              <div class="git-stats__row">
+                <div class="git-stats__label">
+                  <i class="far fa-eye"></i>
+                  <%= t(:watchers).capitalize %>
+                </div>
+                <div class="git-stats__right">
+                  <div class="git-stats__value"><%= @git_snapshot[:watchers] %></div>
+                  <% if @git_snapshot[:watchers_rank].present? and @git_snapshot[:watchers_total].present? %>
+                  <div class="git-stats__rank">
+                    <%= t(:ranked_out_of, rank: @git_snapshot[:watchers_rank], total: @git_snapshot[:watchers_total])%>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+              <div class="git-stats__row">
+                <div class="git-stats__label">
+                  <i class="far fa-star"></i>
+                  <%= t(:stargazers).capitalize %>
+                </div>
+                <div class="git-stats__right">
+                  <div class="git-stats__value"><%= @git_snapshot[:stargazers] %></div>
+                  <% if @git_snapshot[:stargazers_rank].present? and @git_snapshot[:stargazers_total].present? %>
+                  <div class="git-stats__rank">
+                    <%= t(:ranked_out_of, rank: @git_snapshot[:stargazers_rank], total: @git_snapshot[:stargazers_total])%>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <% end %>
+            <div class="git-repo-link">
+              <% if @coin.has_github? %>
+                <i class="fab fa-github"></i> <%= t :github_repo %>:
+                <%= link_to @coin.git_repo, github_url(@coin.git_repo), rel: "nofollow noopener noreferrer", onclick: "return debouncedSendLink(this.href);" %>
+              <% elsif @coin.has_gitlab? %>
+                <i class="fab fa-gitlab"></i> <%= t :gitlab_repo %>:
+                <%= link_to @coin.git_repo, gitlab_url(@coin.git_repo), rel: "nofollow noopener noreferrer", onclick: "return debouncedSendLink(this.href);" %>
+              <% end %>
+            </div>
+          </div>
+          <div class="copy-container">
+            <span class="desktop-copy"><%= t(:development_activity_copy, name: @coin.name, symbol: @coin.symbol) %></span>
+            <span class="mobile-copy">
+              <%= t(:development_activity_copy, name: @coin.name, symbol: @coin.symbol).truncate(80, separator: /[\p{S}\s]/u, omission: "") %>
+              <a href="#" onclick="showReadMore(this); return false;"><%= t(:read_more) %></a>
+            </span>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <script src="https://unpkg.com/popper.js@1.15.0"></script>
+    <script src="https://unpkg.com/tippy.js@4.3.4"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="/js/d3scription.js?v2"></script>
+    <script type="text/javascript">
+      /* Load Styles */
+      (function() {
+        var css = [
+          {
+            href: "https://pro.fontawesome.com/releases/v5.7.2/css/all.css",
+            // integrity: "sha384-6jHF7Z3XI3fF4XZixAuSu0gGKrXwoX/w3uFPxC56OtjChio7wtTGJWRW53Nhx6Ev",
+            crossOrigin: "anonymous"
+          },
+          {href: "<%= stylesheet_path 'indicators' %>"},
+        ];
+        var headFragment = document.createDocumentFragment();
+        css.forEach(function(cssObj) {
+          var link = document.createElement('link');
+          link.rel = "stylesheet";
+          Object.keys(cssObj).map((function(key) {
+            link[key] = cssObj[key];
+          }));
+          headFragment.append(link);
+        });
+        document.head.append(headFragment);
+      })();
+
+      function handleOnload() {
+        var main = document.getElementById('main');
+        var loader = document.getElementById('loader');
+        main.style.visibility = 'visible';
+        loader.style.display = 'none';
+        loadCharts();
+
+        window.parent.postMessage(
+          {
+            type: 'dataLoaded',
+            parameters: {},
+          },
+          '*'
+        );
+
+        // Call once to ensure iframe size is set
+        throttledReportWindowSize();
+      }
+
+      /* Post Messaging */
+      // taken from https://github.com/lodash/lodash/
+      function isObject(value) {
+        const type = typeof value
+        return value != null && (type == 'object' || type == 'function')
+      }
+      function debounce(func, wait, options) {
+        let lastArgs,
+          lastThis,
+          maxWait,
+          result,
+          timerId,
+          lastCallTime
+
+        let lastInvokeTime = 0
+        let leading = false
+        let maxing = false
+        let trailing = true
+
+        // Bypass `requestAnimationFrame` by explicitly setting `wait=0`.
+        const useRAF = (!wait && wait !== 0 && typeof root.requestAnimationFrame === 'function')
+
+        if (typeof func !== 'function') {
+          throw new TypeError('Expected a function')
+        }
+        wait = +wait || 0
+        if (isObject(options)) {
+          leading = !!options.leading
+          maxing = 'maxWait' in options
+          maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait
+          trailing = 'trailing' in options ? !!options.trailing : trailing
+        }
+
+        function invokeFunc(time) {
+          const args = lastArgs
+          const thisArg = lastThis
+
+          lastArgs = lastThis = undefined
+          lastInvokeTime = time
+          result = func.apply(thisArg, args)
+          return result
+        }
+
+        function startTimer(pendingFunc, wait) {
+          if (useRAF) {
+            root.cancelAnimationFrame(timerId);
+            return root.requestAnimationFrame(pendingFunc)
+          }
+          return setTimeout(pendingFunc, wait)
+        }
+
+        function cancelTimer(id) {
+          if (useRAF) {
+            return root.cancelAnimationFrame(id)
+          }
+          clearTimeout(id)
+        }
+
+        function leadingEdge(time) {
+          // Reset any `maxWait` timer.
+          lastInvokeTime = time
+          // Start the timer for the trailing edge.
+          timerId = startTimer(timerExpired, wait)
+          // Invoke the leading edge.
+          return leading ? invokeFunc(time) : result
+        }
+
+        function remainingWait(time) {
+          const timeSinceLastCall = time - lastCallTime
+          const timeSinceLastInvoke = time - lastInvokeTime
+          const timeWaiting = wait - timeSinceLastCall
+
+          return maxing
+            ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
+            : timeWaiting
+        }
+
+        function shouldInvoke(time) {
+          const timeSinceLastCall = time - lastCallTime
+          const timeSinceLastInvoke = time - lastInvokeTime
+
+          // Either this is the first call, activity has stopped and we're at the
+          // trailing edge, the system time has gone backwards and we're treating
+          // it as the trailing edge, or we've hit the `maxWait` limit.
+          return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+            (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait))
+        }
+
+        function timerExpired() {
+          const time = Date.now()
+          if (shouldInvoke(time)) {
+            return trailingEdge(time)
+          }
+          // Restart the timer.
+          timerId = startTimer(timerExpired, remainingWait(time))
+        }
+
+        function trailingEdge(time) {
+          timerId = undefined
+
+          // Only invoke if we have `lastArgs` which means `func` has been
+          // debounced at least once.
+          if (trailing && lastArgs) {
+            return invokeFunc(time)
+          }
+          lastArgs = lastThis = undefined
+          return result
+        }
+
+        function cancel() {
+          if (timerId !== undefined) {
+            cancelTimer(timerId)
+          }
+          lastInvokeTime = 0
+          lastArgs = lastCallTime = lastThis = timerId = undefined
+        }
+
+        function flush() {
+          return timerId === undefined ? result : trailingEdge(Date.now())
+        }
+
+        function pending() {
+          return timerId !== undefined
+        }
+
+        function debounced(...args) {
+          const time = Date.now()
+          const isInvoking = shouldInvoke(time)
+
+          lastArgs = args
+          lastThis = this
+          lastCallTime = time
+
+          if (isInvoking) {
+            if (timerId === undefined) {
+              return leadingEdge(lastCallTime)
+            }
+            if (maxing) {
+              // Handle invocations in a tight loop.
+              timerId = startTimer(timerExpired, wait)
+              return invokeFunc(lastCallTime)
+            }
+          }
+          if (timerId === undefined) {
+            timerId = startTimer(timerExpired, wait)
+          }
+          return result
+        }
+        debounced.cancel = cancel
+        debounced.flush = flush
+        debounced.pending = pending
+        return debounced
+      }
+
+      function sendLink(url, index = null) {
+        var payload = {
+          type: 'linkPressed',
+          parameters: {
+            url,
+          },
+        };
+        if (index) {
+          payload.parameters.position = index;
+        }
+        window.parent.postMessage(payload, '*');
+        return false;
+      }
+
+      var debouncedSendLink = debounce(sendLink, 500, {leading: true, trailing: false});
+
+      function reportWindowSize() {
+        var payload = {
+          type: 'resize',
+          parameters: {
+            height: document.body.scrollHeight || window.innerHeight,
+            width: window.innerWidth,
+          },
+        };
+        window.parent.postMessage(payload, '*');
+      }
+      var throttledReportWindowSize = debounce(reportWindowSize, 500, {leading: true, trailing: true});
+
+      window.addEventListener('resize', throttledReportWindowSize);
+
+      /* Others */
+      function showReadMore(triggeringElement) {
+        var containingElement = triggeringElement.closest('.copy-container');
+        var desktopElements = containingElement.getElementsByClassName('desktop-copy');
+        var mobileElements = containingElement.getElementsByClassName('mobile-copy');
+
+        if (desktopElements && desktopElements.length > 0) {
+          if (mobileElements && mobileElements.length > 0) {
+            for (var i = 0; i < mobileElements.length; i++) {
+              mobileElements[i].style.display = "none";
+            }
+          }
+          for (var i = 0; i < desktopElements.length; i++) {
+            desktopElements[i].style.display = "unset";
+          }
+        } else {
+          triggeringElement.display = "none";
+        }
+      }
+
+      /* Polyfills */
+      // Element.closest() for IE9+
+      if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector ||
+                                    Element.prototype.webkitMatchesSelector;
+      }
+
+      if (!Element.prototype.closest) {
+        Element.prototype.closest = function(s) {
+          var el = this;
+
+          do {
+            if (el.matches(s)) return el;
+            el = el.parentElement || el.parentNode;
+          } while (el !== null && el.nodeType === 1);
+          return null;
+        };
+      }
+    </script>
+    <script type="text/javascript">
+      /* CHARTS */
+      function loadCharts() {
+        var mobileBreakpoint = 740;
+        var defaultChartWidth = 620;
+        var widthToHeightRatio = 4/3;
+        var isMobile = window.innerWidth <= mobileBreakpoint;
+
+        /* Localization */
+        var i18nDays = <%= t(:day_names, scope: :date ).to_json.html_safe %>;
+        var i18nShortDays = <%= t(:abbr_day_names, scope: :date ).to_json.html_safe %>;
+        var i18nMonths = <%= t(:month_names, scope: :date ).to_json.html_safe %>;
+        var i18nShortMonths = <%= t(:abbr_month_names, scope: :date ).to_json.html_safe %>;
+        var i18nDelimiter = <%= t(:delimiter, scope: 'number.format' ).to_json.html_safe %>;
+        var i18nSeparator = <%= t(:separator, scope: 'number.format' ).to_json.html_safe %>;
+        d3.timeFormatDefaultLocale({
+          "dateTime": "%a %b %e %X %Y",
+          "date": "%Y-%m-%d",
+          "time": "%H:%M:%S",
+          "periods": ["AM", "PM"],
+          "days": i18nDays,
+          "shortDays": i18nShortDays,
+          "months": i18nMonths.slice(1),
+          "shortMonths": i18nShortMonths.slice(1),
+        });
+        d3.formatLocale({
+          "decimal": i18nDelimiter,
+          "thousands": i18nSeparator,
+          "grouping": [3],
+          "currency": ["$", ""],
+        })
+
+        var i18nCommitsLabel = <%= t(:commits).to_json.html_safe %>;
+        var i18nCommitActivityTooltip = <%= t(:commit_activity_tooltip).to_json.html_safe %>;
+
+        <% if @commit_activity.present? %>
+        /* Commit Activity */
+
+        // Functions
+        function getXCA(d) { return d.timestamp; }
+        function getYCA(d) { return d.commits; }
+
+        // Data
+        var idCA = 'commit-activity';
+        var commitActivity = <%= @commit_activity.to_json.html_safe %>;
+        var dataCA = commitActivity.map(function(d) {
+          var timestamp = new Date(getXCA(d) * 1000);
+          var commits = getYCA(d);
+          return {
+            timestamp: timestamp,
+            commits: commits
+          };
+        });
+        if (isMobile) {
+          dataCA = dataCA.slice(-26); // half a year in weeks
+        } else {
+          dataCA = dataCA.slice(-52); // a year in weeks
+        }
+
+        // Dimensions and scale
+        var marginCA = {top: 20, right: 20, bottom: 20, left: 40};
+        if (isMobile) {
+          marginCA = {top: 0, right: 20, bottom: 40, left: 50};
+        }
+        var outerWidthCA = document.getElementById(idCA).getBoundingClientRect()['width'] || defaultChartWidth;
+        var widthCA = outerWidthCA - marginCA.left - marginCA.right;
+        var outerHeightCA = outerWidthCA / widthToHeightRatio;
+        var heightCA = outerHeightCA - marginCA.top - marginCA.bottom;
+        var barWidthCA = Math.floor(widthCA / dataCA.length) - 1;
+
+        var datesCA = dataCA.map(getXCA);
+        var minDateCA = d3.min(datesCA);
+        var maxDateCA = d3.max(datesCA);
+        var minYScaleCA = 10;
+        var maxCommitsCA = d3.max(dataCA.map(getYCA));
+        var xCA = d3.scaleTime()
+                    .domain([
+                      minDateCA,
+                      new Date(maxDateCA.valueOf() + 7*24*60*60*1000) // add one week to max
+                    ])
+                    .range([0, widthCA]);
+        var yCA = d3.scaleLinear()
+                    .domain([0, Math.max(maxCommitsCA, minYScaleCA)])
+                    .range([heightCA, 10]);
+
+        // Chart
+        var chartCA = d3.select('#' + idCA)
+                        .attr('viewBox', '0 0 ' + outerWidthCA + ' ' + outerHeightCA)
+                      .append('g')
+                        .attr('transform', 'translate(' + marginCA.left + ', ' + marginCA.top + ')');
+
+        // Tooltip
+        var tooltipOffsetCa = isMobile ? { top: -70, left: 20 } : { top: 10, left: 10 };
+        var tipFactoryCA = d3scription(function(d) {
+          var date = d3.timeFormat('%b %d, %Y')(getXCA(d));
+          var value = getYCA(d);
+          var tooltip = i18nCommitActivityTooltip
+                          .replace('{date}', date)
+                          .replace('{value}', value);
+          return tooltip;
+        }, {
+          class: 'chart-tooltip',
+          offset: tooltipOffsetCa,
+        });
+        var tipCA = tipFactoryCA().element(chartCA);
+
+        var touchEle = null;
+
+        function startTouchEvent(event) {
+          if (event.targetTouches && event.targetTouches[0]) {
+            var touch = event.targetTouches[0];
+            if (typeof touch.clientX !== 'undefined' && typeof touch.clientY !== 'undefined') {
+              var ele = document.elementFromPoint(touch.clientX, touch.clientY);
+              if (!touchEle || !touchEle.isEqualNode(ele)) {
+                if (touchEle) {
+                  touchEle.dispatchEvent(new Event('mouseout'));
+                }
+                ele.dispatchEvent(new CustomEvent('mouseover', { detail: {
+                  clientX: touch.clientX,
+                  clientY: touch.clientY,
+                  pageX: touch.pageX,
+                  pageY: touch.pageY,
+                  screenX: touch.screenX,
+                  screenY: touch.screenY,
+                } }));
+                touchEle = ele;
+              }
+            }
+          }
+        }
+
+        function endTouchEvent(event) {
+          if (touchEle) {
+            touchEle.dispatchEvent(new Event('mouseout'));
+          }
+        }
+
+        var baseEle = document.getElementById(idCA);
+        if (baseEle) {
+          baseEle.addEventListener('touchstart', startTouchEvent);
+          baseEle.addEventListener('touchmove', startTouchEvent);
+          // baseEle.addEventListener('touchcancel', endTouchEvent);
+          // baseEle.addEventListener('touchend', endTouchEvent);
+        }
+
+        // Bars
+        var activeBarsCA = [];
+        var barCA = chartCA.selectAll('g.bar').data(dataCA)
+                            .enter().append('g')
+                            .attr('class', 'bar')
+                            .attr('transform', function(d, i) {
+                              return "translate(" + xCA(getXCA(d)) + ", 0)";
+                            });
+        var rectCA = barCA.append('rect')
+              .attr('y', heightCA)
+              .attr('height', 0)
+              .attr('width', barWidthCA)
+              .on('mouseover', function(event) {
+                d3.select(this).attr('opacity', 0.7);
+                tipCA.show.apply(this, arguments);
+                activeBarsCA.push(this);
+              })
+              .on('mouseout', function(event) {
+                d3.select(this).attr('opacity', 1);
+                tipCA.hide.apply(this, arguments);
+                while (activeBarsCA.length > 0) {
+                  var activeBar = activeBarsCA.pop();
+                  d3.select(activeBar).attr('opacity', 1);
+                }
+              });
+
+        // Starting animation
+        rectCA.transition()
+              .duration(800)
+              .attr("y", function(d) { return yCA(getYCA(d)); })
+              .attr("height", function(d) { return heightCA - yCA(getYCA(d)); })
+              .delay(0)
+
+        // X Axis
+        var tickValuesCA = d3.timeMonth.range(minDateCA, maxDateCA, 3);
+        tickValuesCA.push(maxDateCA);
+        var xAxisCA = d3.axisBottom(xCA)
+                        .tickValues(tickValuesCA)
+                        .tickFormat(d3.timeFormat('%b %Y'));
+        chartCA.append('g')
+                  .attr('class', 'x axis')
+                  .attr('transform', 'translate(0, ' + heightCA + ')')
+                  .call(xAxisCA);
+
+        // Y Axis
+        var yAxisCA = d3.axisLeft(yCA)
+                        .ticks(4)
+                        .tickPadding(10);
+        chartCA.append('g')
+                  .attr('class', 'y axis')
+                  .call(yAxisCA)
+                .append('text')
+                  .attr('class', 'title')
+                  .attr('transform', 'rotate(-90)')
+                  .attr('y', -30)
+                  .attr('x', -heightCA/2)
+                  .text(i18nCommitsLabel);
+        <% end %>
+
+        /* indicators summary donut chart */
+        // Data
+        var idIS = 'indicator-summary';
+        var summaryData = <%= @summary.to_json.html_safe %>;
+        var dataIS = summaryData;
+
+        // Dimensions and scale
+        var donutWidthToHeightRatio = 1;
+        var maxDonutChartDimension = 250;
+        var defaultDonutChartWidth = maxDonutChartDimension;
+        var marginIS = {top: 10, right: 10, bottom: isMobile ? 10 : 25, left: 10};
+
+        // Determine Constraints
+        var outerWidthConstraintIS = document.getElementById(idIS).getBoundingClientRect()['width'] || defaultDonutChartWidth;
+        outerWidthConstraintIS = Math.min(outerWidthConstraintIS, maxDonutChartDimension);
+        var widthConstraintIS = outerWidthConstraintIS - marginIS.left - marginIS.right;
+        var outerHeightConstraintIS = outerWidthConstraintIS / donutWidthToHeightRatio;
+        outerHeightConstraintIS = Math.min(outerHeightConstraintIS, maxDonutChartDimension);
+        var heightConstraintIS = outerHeightConstraintIS - marginIS.top - marginIS.bottom;
+        // Calculate dimensions based on constraints
+        var heightIS = Math.min(widthConstraintIS / donutWidthToHeightRatio, heightConstraintIS);
+        var widthIS = heightIS * donutWidthToHeightRatio;
+        var outerHeightIS = heightIS + marginIS.top + marginIS.bottom;
+        var outerWidthIS = widthIS + marginIS.left + marginIS.right;
+        var donutHole = isMobile ? 0.60 : 0.70;
+        var radiusIS = Math.floor(widthIS / 2);
+        var innerRadiusIS = Math.floor(radiusIS * donutHole);
+
+        var chartIS = d3.select('#' + idIS)
+            .attr('viewBox', '0 0 ' + outerWidthIS + ' ' + outerHeightIS)
+            .style("width", outerWidthIS)
+          .append("g")
+            .attr("transform", "translate(" + (widthIS / 2 + marginIS.left) + "," + (heightIS / 2 + marginIS.top) + ")");
+
+        // set the color scale
+        var colorIS = d3.scaleOrdinal()
+          .domain(['sell', 'neutral', 'buy'])
+          .range(["#e85d5d", "#ffcf5b", "#89c230"]);
+
+        // Compute the position of each group on the pie:
+        var pieIS = d3.pie()
+          .value(function(d) { return d.value; });
+        var pieDataIS = pieIS(d3.entries(dataIS));
+
+        // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+        chartIS
+          .selectAll('slice')
+          .data(pieDataIS)
+          .enter()
+          .append('path')
+          .attr('d', d3.arc()
+            .innerRadius(innerRadiusIS)         // This is the size of the donut hole
+            .outerRadius(radiusIS)
+          )
+          .attr('fill', function(d){ return(colorIS(d.data.key)); })
+      }
+    </script>
+    <%= render 'layouts/tracking_scripts' %>
+  </body>
+</html>

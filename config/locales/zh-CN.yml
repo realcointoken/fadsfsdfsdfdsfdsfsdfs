@@ -1,0 +1,281 @@
+---
+zh-CN:
+  activerecord:
+    errors:
+      messages:
+        record_invalid: '验证失败: %{errors}'
+        restrict_dependent_destroy:
+          has_one: 由于 %{record} 需要此记录，所以无法移除记录
+          has_many: 由于 %{record} 需要此记录，所以无法移除记录
+  date:
+    abbr_day_names:
+    - 周日
+    - 周一
+    - 周二
+    - 周三
+    - 周四
+    - 周五
+    - 周六
+    abbr_month_names:
+    -
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月
+    day_names:
+    - 星期日
+    - 星期一
+    - 星期二
+    - 星期三
+    - 星期四
+    - 星期五
+    - 星期六
+    formats:
+      default: "%Y-%m-%d"
+      long: "%Y年%m月%d日"
+      short: "%m月%d日"
+    month_names:
+    -
+    - 一月
+    - 二月
+    - 三月
+    - 四月
+    - 五月
+    - 六月
+    - 七月
+    - 八月
+    - 九月
+    - 十月
+    - 十一月
+    - 十二月
+    order:
+    - :year
+    - :month
+    - :day
+  datetime:
+    distance_in_words:
+      about_x_hours: 大约 %{count} 小时
+      about_x_months: 大约 %{count} 个月
+      about_x_years: 大约 %{count} 年
+      almost_x_years: 接近 %{count} 年
+      half_a_minute: 半分钟
+      less_than_x_seconds: 不到 %{count} 秒
+      less_than_x_minutes: 不到 %{count} 分钟
+      over_x_years: "%{count} 年多"
+      x_seconds: "%{count} 秒"
+      x_minutes: "%{count} 分钟"
+      x_days: "%{count} 天"
+      x_months: "%{count} 个月"
+      x_years: "%{count} 年"
+    prompts:
+      second: 秒
+      minute: 分
+      hour: 时
+      day: 日
+      month: 月
+      year: 年
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      accepted: 必须是可被接受的
+      blank: 不能为空字符
+      confirmation: 与 %{attribute} 不匹配
+      empty: 不能留空
+      equal_to: 必须等于 %{count}
+      even: 必须为双数
+      exclusion: 是保留关键字
+      greater_than: 必须大于 %{count}
+      greater_than_or_equal_to: 必须大于或等于 %{count}
+      inclusion: 不包含于列表中
+      invalid: 是无效的
+      less_than: 必须小于 %{count}
+      less_than_or_equal_to: 必须小于或等于 %{count}
+      model_invalid: '验证失败: %{errors}'
+      not_a_number: 不是数字
+      not_an_integer: 必须是整数
+      odd: 必须为单数
+      other_than: 长度非法（不可为 %{count} 个字符
+      present: 必须是空白
+      required: 必须存在
+      taken: 已经被使用
+      too_long: 过长（最长为 %{count} 个字符）
+      too_short: 过短（最短为 %{count} 个字符）
+      wrong_length: 长度非法（必须为 %{count} 个字符）
+    template:
+      body: 如下字段出现错误：
+      header: 有 %{count} 个错误发生导致“%{model}”无法被保存。
+  helpers:
+    select:
+      prompt: 请选择
+    submit:
+      create: 新增%{model}
+      submit: 储存%{model}
+      update: 更新%{model}
+  number:
+    currency:
+      format:
+        delimiter: ","
+        format: "%u %n"
+        precision: 2
+        separator: "."
+        significant: false
+        strip_insignificant_zeros: false
+        unit: CN¥
+    format:
+      delimiter: ","
+      precision: 3
+      separator: "."
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: 十亿
+          million: 百万
+          quadrillion: 千兆
+          thousand: 千
+          trillion: 兆
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 1
+        significant: false
+        strip_insignificant_zeros: false
+      storage_units:
+        format: "%n %u"
+        units:
+          byte: 字节
+          eb: EB
+          gb: GB
+          kb: KB
+          mb: MB
+          pb: PB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ''
+        format: "%n%"
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: " 以及 "
+      two_words_connector: " 和 "
+      words_connector: "、"
+  time:
+    am: 上午
+    formats:
+      default: "%Y年%m月%d日 %A %H:%M:%S %Z"
+      long: "%Y年%m月%d日 %H:%M"
+      short: "%m月%d日 %H:%M"
+    pm: 下午
+  buy: 买入
+  sell: 卖出
+  neutral: 持有
+  strong_buy: "买入"
+  strong_sell: "卖出"
+  na: "不适用"
+  updated_on_date: "更新于%{date}"
+  sample_value_label: "市值"
+  min_label: "最小"
+  max_label: "最大"
+  signal_label: "信号"
+  technical_analysis: "技术面分析"
+  technical_indicators: "技术指标"
+  technical_analysis_summary: "技术分析概要"
+  technical_indicator_copy: "技术指标通常通过价格和交易量计算总结得出，常用于市场走向判断。交易者经常使用它们来分析短期价格变动并确定买入点和卖出点。技术指标通常与其他形式的财务指标分析一并使用。"
+  indicator_summary_copy: "我们汇总了8个最常用技术指标的卖出/买入/持有信号，为您提供快速的市场脉搏。"
+  fundamentals: "基本面"
+  development_activity: "开发活动"
+  development_activity_copy:  "可在您的基本面调研和分析中应用开发活动，以确保项目的不断推进并保持健康的开发者社区。"
+  developer_community_copy: |
+    <p><b>出资者：</b>出资者是已为项目提交代码的开发者数量。</p>
+    <p><b>分叉：</b>用户在复制项目的开源代码时即会创建分叉，这可以表示使用或重用该代码。</p>
+    <p><b>观察者：</b>观察者是指订阅者在项目代码改变时收到通知的用户。</p>
+    <p><b>明星：</b>明星是将项目代码添加书签的用户。星星可以用来衡量开源项目的受欢迎程度。</p>
+  commit_activity: "提交活动"
+  commits: "提交"
+  commit_activity_tooltip: "周 {date}<br/><b>{value}</b>提交"
+  github_repo: "Github Repo"
+  gitlab_repo: "Gitlab Repo"
+  developer_community: "开发者社区"
+  contributors: 出资者
+  forks: 分叉
+  watchers: 观察者
+  stargazers: 明星
+  ranked_out_of: "其中%{rank}个，共%{total}个"
+  latest_research: "最新研究"
+  market_news_research: "市场新闻研究"
+  time_ago: "%{time_words}前"
+  read_more: "了解更多内容"
+  coin_empty: "该加密货币没有研究数据"
+  coins:
+    ethereum: 以太坊
+    litecoin: 莱特币
+    zcash: 大零币
+    cardano: 艾达币
+    ethereum-classic: Ethereum Classic
+    binance-coin: 币安币
+    stellar: 恒星币
+    bitcoin: 比特币
+    ripple: 瑞波币
+    dash: 达世币
+    neo: NEO
+    bitcoin-cash: 比特币现金
+    eos: EOS
+    tron: 波场币
+    iota: IOTA
+    tezos: Tezos
+  indicators:
+    title:
+      rsi: "RSI 14"
+      stochrsi: "Stochastic RSI 14"
+      macd: "MACD (12, 26, 9)"
+      cci: "CCI"
+      stochastic_fast: "Stochastic fast (14, 3)"
+      stochastic_slow: "Stochastic (14, 3, 3)"
+      sma: "移动平均线（20比50）"
+      ema: "期望移动平均线 (10比20)"
+    rule:
+      rsi: |
+        小于30时买入。
+        大于70时卖出。
+        30到70之间（含）时持有。
+      stochrsi: |
+        小于20时买入。
+        大于80时卖出。
+        20到80之间（含）时持有。
+      macd: |
+        大于0时买入。
+        小于0时卖出。
+        无持有信号。
+      cci: |
+        小于-100时买入。
+        大于100时卖出。
+        -100到100之间（含）时持有。
+      stochastic_fast: |
+        小于20时买入。
+        大于80时卖出。
+        20到80之间（含）时持有。
+      stochastic_slow: |
+        小于20时买入。
+        大于80时卖出。
+        20到80之间（含）时持有。
+      sma: |
+        大于0时买入。
+        小于0时卖出。
+        无持有信号。
+      ema: |
+        大于0时买入。
+        小于0时卖出。
+        无持有信号。

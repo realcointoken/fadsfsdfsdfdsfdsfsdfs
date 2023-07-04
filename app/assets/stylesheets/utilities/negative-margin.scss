@@ -1,0 +1,14 @@
+$spacings: $sp1, $sp2, $sp3, $sp4;
+
+// Tachyons has this but currently missing horizontal (h) modifier
+@mixin margin-setup($namespace) {
+  @each $sp in $spacings {
+    $i: index($spacings, $sp);
+    .nh#{$i}#{$namespace} {
+      margin-left: -#{$sp};
+      margin-right: -#{$sp};
+    }
+  }
+}
+
+@include margin-setup('');

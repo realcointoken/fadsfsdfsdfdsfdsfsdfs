@@ -1,0 +1,12 @@
+@import 'variables';
+@import 'tachyons';
+@import 'components/table';
+@import 'modules/article';
+.article-grid-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-gap: 8px 12px;
+}
+.pagination {
+  padding: 1rem 0 0;
+}

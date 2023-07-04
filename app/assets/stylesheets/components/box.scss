@@ -1,0 +1,19 @@
+.box {
+  display: block;
+  padding: $sp3;
+}
+@media #{$screen-min-ns} {
+  .box {
+    &.cozy {
+      padding: $sp4;
+    }
+  }
+}
+@media #{$screen-min-m} {
+  .box {
+    &.cozy {
+      padding: $sp5;
+    }
+    @include shadow-s1();
+  }
+}

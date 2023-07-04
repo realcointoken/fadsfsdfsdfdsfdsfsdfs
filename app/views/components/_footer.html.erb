@@ -1,0 +1,105 @@
+<div class="footer w-100 border-box">
+  <div class="container<%= ' fixed-width' unless is_fluid? %>">
+    <div class="footer-flex-container">
+      <div class="footer-item">
+        <div class="link nav-logo-wrapper">
+          <a href="<%= root_path %>" title="Home">
+            <img src="<%= image_path('logo.svg') %>" class="nav-logo__img" alt="CoinFi Logo">
+          </a>
+        </div>
+
+      </div>
+      <div class="footer-item expandable" data-target="coins">
+        <div class="footer-item__header">Coins<i class="fas fa-angle-down accordion-icon"></i></div>
+        <nav class="nav-x" data-expandable="coins" data-height="80">
+          <ul className="flex-wrap">
+            <li>
+              <a href="<%= coins_path %>">Cryptocurrency Prices Live</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-item expandable" data-target="research">
+        <div class="footer-item__header">Research<i class="fas fa-angle-down"></i></div>
+        <nav class="nav-x" data-expandable="research" data-height="80">
+          <ul className="flex-wrap">
+            <li>
+              <a href="/research/crypto-market">Crypto Analysis</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-item expandable" data-target="calculators">
+        <div class="footer-item__header">Calculators<i class="fas fa-angle-down"></i></div>
+        <nav class="nav-x" data-expandable="calculators" data-height="30">
+          <ul className="flex-wrap">
+            <li>
+              <a href="<%= calculator_path('bitcoin-investment-calculator') %>">Bitcoin Investment Calculator</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-item expandable" data-target="company">
+        <div class="footer-item__header">Company<i class="fas fa-angle-down"></i></div>
+        <nav class="nav-x" data-expandable="company" data-height="180">
+          <ul className="flex-wrap">
+            <li>
+              <a href="<%= podcast_path %>">Podcast</a>
+            </li>
+            <li>
+              <a href="https://www.coinfi.com/blog">Blog</a>
+            </li>
+            <li>
+              <a href="https://careers.coinfi.com">Careers</a>
+            </li>
+            <li>
+              <a href="<%= page_press_path %>" rel="nofollow">Press</a>
+            </li>
+            <li>
+              <a href="<%= page_about_path %>">About</a>
+            </li>
+            <li>
+              <a href="https://feedback.coinfi.com/feature-requests" rel="nofollow">Feedback</a>
+            </li>
+            <li>
+              <a href="<%= page_privacy_path %>" rel="nofollow">Privacy Policy</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-item expandable" data-target="contact">
+        <div class="footer-item__header">
+          Contact<i class="fas fa-angle-down"></i>
+        </div>
+        <nav class="nav-x" data-expandable="contact" data-height="90">
+          <ul className="flex-wrap">
+            <li>
+              <a href="mailto:contact@coinfi.com">contact@coinfi.com</a>
+            </li>
+            <li>
+              <div class="social-icons f6 pv3 flex-none flex-auto-l">
+                <a href="https://www.facebook.com/CoinFiProject/" class="pv1 pr1" target="_blank" rel="noopener">
+                  <i class="fab fa-facebook icon-white" title="Facebook"></i>
+                </a>
+                <a href="https://twitter.com/coin_fi" class="pv1 ph1" target="_blank" rel="noopener">
+                  <i class="fab fa-twitter icon-white" title="Twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/company/coinfi/" class="pv1 ph1" target="_blank" rel="noopener">
+                  <i class="fab fa-linkedin icon-white" title="LinkedIn"></i>
+                </a>
+                <a href="https://angel.co/coinfi" class="pv1 ph1" target="_blank" rel="noopener">
+                  <i class="fab fa-angellist icon-white" class="icon-white" title="AngelList"></i>
+                </a>
+                <a href="https://github.com/coinfi" class="pv1 pl1" target="_blank" rel="noopener">
+                  <i class="fab fa-github icon-white" title="GitHub"></i>
+                </a>
+                <br>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-copyright">Copyright &copy; <%= Date.today.year %> <a class="color-inherit" href="/">CoinFi</a> - All rights reserved.</div>
+  </div>
+</div>

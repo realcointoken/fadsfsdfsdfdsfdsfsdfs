@@ -1,0 +1,39 @@
+.icons {
+  @extend .nh3;
+  @extend .nt3;
+  .icon {
+    display: inline-block;
+    font-size: 1.6rem;
+    line-height: 1;
+    text-decoration: none;
+    text-align: center;
+    color: $tiber;
+    margin-left: $sp3;
+    margin-right: $sp3;
+    margin-top: $sp3;
+    &.hover-silver:hover,
+    &.hover-silver:focus {
+      color: $silver !important;
+    }
+    &.icon-light {
+      color: $white;
+    }
+    > i {
+      transform: scale(0.9);
+      -webkit-transform: scale(0.9);
+    }
+    label {
+      display: block;
+      text-transform: uppercase;
+      font-size: 0.5rem;
+      margin-top: $sp2;
+      letter-spacing: 0.1em;
+      font-family: $sans-alt;
+    }
+  }
+}
+.icon {
+  display: inline-block;
+  line-height: 0;
+  vertical-align: middle;
+}

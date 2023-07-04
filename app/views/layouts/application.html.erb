@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= render 'components/rollbar' %>
+    <meta charset="utf-8">
+    <% unless is_production? %><meta name="robots" content="noindex,nofollow"><% end %>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <%= display_meta_tags site: "CoinFi", reverse: true %>
+    <%= jsonld_tag %>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="<%= image_path('apple-touch-icon.png') %>">
+    <link rel="apple-touch-icon-precomposed" href="<%= image_path('apple-touch-icon-precomposed.png') %>">
+    <link rel="icon" href="<%= image_path('favicon.png') %>">
+    <%= render 'layouts/tracking_scripts_preconnect' %>
+    <script src="https://kit.fontawesome.com/08d8853f9c.js" crossorigin="anonymous"></script>
+    <%= stylesheet_link_tag 'application' %>
+    <%# This should really be included but currently conflicts with a lot of our the css styles %>
+    <%#= stylesheet_pack_tag 'vendor-bundle', media: 'all' %>
+    <%= csrf_meta_tags %>
+    <%= yield :head %>
+  </head>
+  <body id="<%= @body_id %>" class="<%= @body_class %>">
+    <header>
+      <%= render partial: "components/nav" %>
+    </header>
+    <main>
+      <%= render partial: "components/flash" %>
+      <%= yield %>
+
+      <%#
+      Output each of the sheet styles as separate `style` tags. Note that is must always be included
+      after any component renders in order to ensure `@jss_server_side_css` is correctly populated
+      %>
+      <% if @jss_server_side_css %>
+        <% @jss_server_side_css.each do |styles_namespace, sheet_css| %>
+          <style data-jss-server-side data-meta="<%= styles_namespace %>">
+            <%= sheet_css %>
+          </style>
+        <% end %>
+      <% end %>
+    </main>
+    <% unless hide_footer? %>
+      <footer>
+        <%= render partial: "components/footer" %>
+      </footer>
+    <% end %>
+    <% unless user_signed_in? %>
+      <%= render partial: "components/login_modal" %>
+      <%= render partial: "components/sign_up_modal" %>
+      <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+    <% end %>
+    <%= javascript_pack_tag 'vendor-bundle' %>
+    <%= javascript_pack_tag 'app-bundle' %>
+    <% unless user_signed_in? %>
+      <%= render "components/modal_script" %>
+    <% end %>
+    <%= render 'layouts/tracking_scripts' %>
+  </body>
+</html>

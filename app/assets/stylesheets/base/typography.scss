@@ -1,0 +1,88 @@
+/*
+ * Scale: http://tachyons.io/docs/typography/scale
+ * Weight: http://tachyons.io/docs/typography/font-weight/
+ * Style: http://tachyons.io/docs/typography/font-style/
+ * Case: http://tachyons.io/docs/typography/text-transform/
+ * Alignment: http://tachyons.io/docs/typography/text-align
+ * Color: http://tachyons.io/docs/themes/skins/
+ */
+
+body {
+  font-family: $body-font;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: $mid-gray;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  color: $bright-gray;
+  font-family: $heading-font;
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+a {
+  color: $aqua;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.heading-font {
+  font-family: $heading-font;
+}
+.body-font {
+  font-family: $body-font;
+}
+.smaller1 {
+  font-size: 0.9em;
+}
+.smaller2 {
+  font-size: 0.8em;
+}
+.smaller3 {
+  font-size: 0.7em;
+}
+.sans-alt {
+  font-family: $sans-alt;
+}
+.f-hero {
+  font-size: $f2;
+}
+@media #{$screen-min-ns} {
+  .f-hero {
+    font-size: $f1;
+  }
+}
+@media #{$screen-min-m} {
+  .f-hero {
+    font-size: $f0;
+  }
+  .f2-m {
+    font-size: $f2;
+  }
+  .tj-m {
+    text-align: justify;
+  }
+}
+@media #{$screen-min-l} {
+  .f-hero {
+    font-size: $f00;
+  }
+  .f2-l {
+    font-size: $f2;
+  }
+}
+.break-word {
+  word-break: break-word;
+}
+.break-all {
+  word-break: break-all;
+}
+@import 'fonts';

@@ -1,0 +1,18 @@
+.bg-pearl-gray= react_component_with_jss "App",
+    withStore: true,
+    props: { \
+      symbol: @coin.symbol,
+      availableSupply: @coin.available_supply,
+      isTradingViewVisible: true,
+      coinObj: @coin_obj,
+      relatedCoins: @related_coins,
+      user: current_user,
+      watching: user_is_watching?(@coin),
+      initialTopCoinsData: @top_coins_data,
+      initialWatchedCoinsData: @watched_coins_data,
+      currencies: @exchange_rates,
+      chartSignals: @grouped_large_eth_signals,
+      summarySignals: @recent_large_signals,
+      howToArticle: @how_to_article,
+    },
+    prerender: true

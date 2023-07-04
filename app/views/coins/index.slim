@@ -1,0 +1,11 @@
+= react_component_with_jss "App",
+    withStore: true,
+    props: { \
+      loggedIn: !!current_user,
+      coinCount: @coin_count,
+      initialCoins: @coins,
+      page: @page,
+      limit: @limit,
+      currencies: @exchange_rates,
+    },
+    prerender: true

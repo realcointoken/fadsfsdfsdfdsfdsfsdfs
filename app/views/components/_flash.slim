@@ -1,0 +1,3 @@
+- if flash.any?
+  .flex-none
+    = react_component_with_jss "FlashMessageListContainer", props: { messages: flash_messages }

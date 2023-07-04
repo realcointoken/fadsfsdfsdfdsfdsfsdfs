@@ -1,0 +1,111 @@
+.field {
+  padding-top: $sp1;
+  padding-bottom: $sp3;
+  label {
+    display: block;
+    margin-bottom: $sp2;
+    font-size: 0.9em;
+  }
+  &.alt {
+    padding-top: 0;
+    padding-bottom: $sp3;
+    @extend .row;
+    @extend .items-center;
+    label {
+      @extend .col-xs-12;
+      @extend .col-md-3;
+      text-align: right;
+      margin-top: $sp2;
+    }
+    > div {
+      @extend .col-xs-12;
+      @extend .col-md-9;
+    }
+    input,
+    textarea {
+      font-size: 0.9em;
+    }
+  }
+}
+input:not([type='checkbox']):not([type='submit']),
+select,
+textarea {
+  width: 100%;
+  max-width: 40em;
+  display: inline-block;
+  padding: 0.5rem;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  border: 1px solid $moon-gray;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  color: $black-70;
+  font-family: $body-font;
+  box-sizing: border-box;
+  &:focus {
+    @include highlight();
+  }
+  &.small {
+    padding: $sp2;
+    font-size: 0.9rem;
+  }
+  &.unstyled {
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    background: transparent;
+    line-height: 1.5;
+  }
+}
+.icon-input {
+  position: relative;
+  input {
+    padding-left: 3rem;
+  }
+  .icon {
+    position: absolute;
+    top: 50%;
+    left: $sp3;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    z-index: 2;
+    padding: 0;
+    &:last-child {
+      left: initial;
+      right: $sp3;
+    }
+  }
+}
+::-webkit-input-placeholder {
+  color: $silver;
+}
+::-moz-placeholder {
+  color: $silver;
+  opacity: 1;
+}
+:-ms-input-placeholder {
+  color: $silver;
+}
+:-moz-placeholder {
+  color: $silver;
+  opacity: 1;
+}
+
+.dark-mode {
+  input:not([type='checkbox']):not([type='submit']),
+  select,
+  textarea {
+    background-color: $white-08;
+    border-color: $white-12;
+    color: $white;
+  }
+  ::-webkit-input-placeholder,
+  ::-moz-placeholder,
+  :-ms-input-placeholder,
+  :-moz-placeholder {
+    color: $white-70;
+  }
+}

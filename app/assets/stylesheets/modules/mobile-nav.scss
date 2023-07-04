@@ -1,0 +1,40 @@
+#news-page .filter-btn,
+.coins-btn {
+  margin-left: 90px;
+}
+
+.filter-btn,
+.coins-btn {
+  text-transform: none;
+}
+
+.btn.filter-btn,
+.btn.coins-btn {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filter-panel-header {
+  height: 60px;
+}
+
+.item-selector-alt label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+@media only screen and (min-width: $screen-m) {
+  .filter-btn,
+  .coins-btn {
+    margin-left: 0;
+  }
+  #coin-tips-tab {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .coins-btn {
+    display: none;
+  }
+}
